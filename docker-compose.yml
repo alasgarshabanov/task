@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  scraper:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - postgres
+
+  postgres:
+    container_name:  postgres
+    image:           postgres:14.6
+    restart: "on-failure"
+    ports:
+      - 5432:5432 # Bind host port 5432 to PostgreSQL port 5432
+    volumes:
+      - ../postgredb:/var/lib/postgresql/data
+    env_file: ./.env
+    environment:
+      - LC_ALL=C.UTF-8
+  
+  adminer:
+    image: adminer
+    restart: always
+    depends_on: 
+      - postgres
+    ports:
+      - 8080:8080
